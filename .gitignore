@@ -1,0 +1,4 @@
+### project related file
+.vscode/
+output/
+__pycache__/
