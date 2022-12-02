@@ -1,4 +1,12 @@
 import torch
+import torch.utils.data
+import torchvision
+import sys
+import os
+from torch import nn
+from torchvision.models import vgg16, VGG16_Weights
+from torchvision import transforms
+
 class AverageMeter(object):
   """Computes and stores the average and current value"""
   def __init__(self, name, fmt=':f'):
@@ -57,3 +65,21 @@ def evaluate(model, criterion, data_loader, neval_batches):
         return top1, top5
 
   return top1, top5
+
+def load_imagenet(data_path, batch_size):
+  train_dir = os.path.join(data_path, "ILSVRC/Data/CLS-LOC/train")
+  val_dir = os.path.join(data_path, "ILSVRC/Data/CLS-LOC/val_sorted")
+  transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize([224, 224]),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+  ])
+  trainset = torchvision.datasets.ImageFolder(root=train_dir, transform=transform)
+  trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
+      shuffle=True, num_workers=0)
+
+  testset = torchvision.datasets.ImageFolder(root=val_dir, transform=transform)
+  testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
+      shuffle=False, num_workers=0)
+
+  return trainloader, testloader

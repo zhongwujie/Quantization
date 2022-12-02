@@ -1,0 +1,22 @@
+num_eval_batches:20, batch_size:250
+batch: 0, acc1: 77.60
+batch: 1, acc1: 76.00
+batch: 2, acc1: 82.00
+batch: 3, acc1: 86.00
+batch: 4, acc1: 82.00
+batch: 5, acc1: 73.20
+batch: 6, acc1: 57.20
+batch: 7, acc1: 60.40
+batch: 8, acc1: 61.60
+batch: 9, acc1: 62.00
+batch: 10, acc1: 70.80
+batch: 11, acc1: 62.80
+batch: 12, acc1: 50.80
+batch: 13, acc1: 57.20
+batch: 14, acc1: 60.40
+batch: 15, acc1: 72.00
+batch: 16, acc1: 83.20
+batch: 17, acc1: 84.80
+batch: 18, acc1: 87.20
+batch: 19, acc1: 83.60
+number of image 5000 :Evaluation accuracy: 71.54
