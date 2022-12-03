@@ -1,4 +1,5 @@
 ### project related file
 .vscode/
-output/
+quantized-models/
 __pycache__/
+float-models/
