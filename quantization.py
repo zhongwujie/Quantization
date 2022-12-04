@@ -15,9 +15,7 @@ from utils import *
 import qvgg16
 
 
-'''
-@brief: evaluate the model, using imagenet
-'''
+''' evaluate the model, using imagenet '''
 def evaluate_model(data_path, batch_size, num_eval_batches, criterion, model):
   print("====== begin evaluating ======")
   model.eval()
@@ -28,17 +26,18 @@ def evaluate_model(data_path, batch_size, num_eval_batches, criterion, model):
     print('number of image %d :Evaluation accuracy: %2.2f'%(batch_size * num_eval_batches, 
       top1.avg))
 
-
 ''' evaluate models in the output'''
 def evaluate_saved_model(data_path, batch_size, num_eval_batches, criterion):
-  model = vgg16()
-  state_dict = torch.load("./quantized-models/quant_vgg16.pth", map_location = torch.device('cpu'))
-  model.load_state_dict(state_dict)
-  for name, module in model.named_modules():
-    print(type(module))
-    # print(F"{name:40}: {module}")
-  # save_quantized_params(model)
-  # evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
+  model = qvgg16.vgg16()
+  file_path = "./output/script-models/quant_vgg16.pt"
+  load_model(file_path, model)
+  evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
+
+''' evaluate the script models'''
+def evaluate_script_model(data_path, batch_size, num_eval_batches, criterion):
+  file_path = "./output/script-models/quant_resnet50.pt"
+  model = torch.jit.load(file_path)
+  evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
 
 
 def save_quantized_models():
@@ -47,7 +46,6 @@ def save_quantized_models():
     quantize=True)
   torch.save(model1.state_dict(), "./quantized-models/quant_resnet50.pth")
   torch.save(model2.state_dict(), "./quantized-models/quant_mobilenet_v2.pth")
-
 
 def save_quantized_params(quantized_model):
 	with open("./params_int.txt",'w') as f:
@@ -85,15 +83,40 @@ def QAT(data_path, batch_size, num_eval_batches, criterion):
   return quantized_model
 
 
+'''convert a model to script model, can only be used for vgg16'''
+def convert_model(src_path, dest_path, model, self_quantized):
+  if self_quantized:
+    model.qconfig = torch.ao.quantization.get_default_qconfig('fbgemm')
+    torch.quantization.prepare(model, inplace=True)
+    quantized_model = torch.quantization.convert(model.eval(), inplace=True)
+  else:
+    quantized_model = model
+  load_model(src_path, quantized_model)
+  sm = torch.jit.script(quantized_model)
+  sm.save(dest_path)
+
+'''Convert all the quantized models to script models'''
+def convert_models():
+  src_folder = "./output/quantized-models"
+  dest_folder = "./output/script-models"
+  models = [resnet50(quantize=True), mobilenet_v2(quantize=True), qvgg16.vgg16()]
+  model_names = ["quant_resnet50.pth", "quant_mobilenet_v2.pth", "quant_vgg16.pth"]
+  self_quantize_sigs = [False, False, True]
+  for i in range(len(models)):
+    src_path = os.path.join(src_folder, model_names[i])
+    output_name = model_names[i].split(".")[0] + ".pt"
+    dest_path = os.path.join(dest_folder, output_name)
+    print(dest_path)
+    convert_model(src_path, dest_path, models[i], self_quantize_sigs[i])
+
+
 def main():
   data_path = "~/code/dataset/imagenet"
   batch_size = 250
   num_eval_batches = 20
   criterion = nn.CrossEntropyLoss()
-  model = QAT(data_path, batch_size, num_eval_batches, criterion)
-  # save_quantized_params(model)
-  # evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
-  torch.save(model.state_dict(), "./output/quantized-models/quant_vgg16.pth")
+  evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
+  # torch.save(model.state_dict(), "./output/quantized-models/quant_vgg16.pth")
 
 
 if __name__ == "__main__":

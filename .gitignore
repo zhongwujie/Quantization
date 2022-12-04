@@ -3,3 +3,7 @@
 quantized-models/
 __pycache__/
 float-models/
+script-models/
+### libtorch
+*.zip
+libtorch/
