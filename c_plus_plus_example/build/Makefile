@@ -51,7 +51,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /home/zhong/code/workplace/Quantization/c_plus_plus_example
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/zhong/code/workplace/Quantization/c_plus_plus_example
+CMAKE_BINARY_DIR = /home/zhong/code/workplace/Quantization/c_plus_plus_example/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhong/code/workplace/Quantization/c_plus_plus_example/CMakeFiles /home/zhong/code/workplace/Quantization/c_plus_plus_example/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhong/code/workplace/Quantization/c_plus_plus_example/build/CMakeFiles /home/zhong/code/workplace/Quantization/c_plus_plus_example/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhong/code/workplace/Quantization/c_plus_plus_example/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhong/code/workplace/Quantization/c_plus_plus_example/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

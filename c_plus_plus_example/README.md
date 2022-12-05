@@ -1,3 +1,4 @@
 **build command:**
-cmake -DCMAKE_PREFIX_PATH=../libtorch .
+cd build
+cmake -DCMAKE_PREFIX_PATH=../libtorch ..
 make

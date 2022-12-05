@@ -4,5 +4,5 @@ project(c_plus_plus_example)
 find_package(Torch REQUIRED)
 
 add_executable(test_model test_model.cpp)
-target_link_libraries(test_model "${TORCH_LIBRARIES}")
+target_link_libraries(test_model ${TORCH_LIBRARIES})
 set_property(TARGET test_model PROPERTY CXX_STANDARD 14)

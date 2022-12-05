@@ -1,9 +1,12 @@
 ### project related file
 .vscode/
-quantized-models/
 __pycache__/
+### output models
+quantized-models/
 float-models/
 script-models/
 ### libtorch
 *.zip
 libtorch/
+### torchvision
+vision/
