@@ -115,7 +115,8 @@ def main():
   batch_size = 250
   num_eval_batches = 20
   criterion = nn.CrossEntropyLoss()
-  evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
+  load_imagenet(data_path, batch_size)
+  # evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
   # torch.save(model.state_dict(), "./output/quantized-models/quant_vgg16.pth")
 
 

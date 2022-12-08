@@ -10,3 +10,6 @@ script-models/
 libtorch/
 ### torchvision
 vision/
+### opencv
+opencv*/
+cvtest/

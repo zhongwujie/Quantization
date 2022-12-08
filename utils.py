@@ -7,7 +7,6 @@ from torch import nn
 from torchvision.models import vgg16, VGG16_Weights
 from torchvision import transforms
 
-
 class AverageMeter(object):
 	"""Computes and stores the average and current value"""
 	def __init__(self, name, fmt=':f'):
@@ -85,7 +84,6 @@ def load_imagenet(data_path, batch_size):
 	testset = torchvision.datasets.ImageFolder(root=val_dir, transform=transform)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
 		shuffle=False, num_workers=0)
-
 	return trainloader, testloader
 
 
