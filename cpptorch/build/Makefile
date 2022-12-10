@@ -123,6 +123,33 @@ test_model/fast:
 	$(MAKE) -f CMakeFiles/test_model.dir/build.make CMakeFiles/test_model.dir/build
 .PHONY : test_model/fast
 
+dataset.o: dataset.cpp.o
+
+.PHONY : dataset.o
+
+# target to build an object file
+dataset.cpp.o:
+	$(MAKE) -f CMakeFiles/test_model.dir/build.make CMakeFiles/test_model.dir/dataset.cpp.o
+.PHONY : dataset.cpp.o
+
+dataset.i: dataset.cpp.i
+
+.PHONY : dataset.i
+
+# target to preprocess a source file
+dataset.cpp.i:
+	$(MAKE) -f CMakeFiles/test_model.dir/build.make CMakeFiles/test_model.dir/dataset.cpp.i
+.PHONY : dataset.cpp.i
+
+dataset.s: dataset.cpp.s
+
+.PHONY : dataset.s
+
+# target to generate assembly for a file
+dataset.cpp.s:
+	$(MAKE) -f CMakeFiles/test_model.dir/build.make CMakeFiles/test_model.dir/dataset.cpp.s
+.PHONY : dataset.cpp.s
+
 test_model.o: test_model.cpp.o
 
 .PHONY : test_model.o
@@ -186,6 +213,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test_model"
+	@echo "... dataset.o"
+	@echo "... dataset.i"
+	@echo "... dataset.s"
 	@echo "... test_model.o"
 	@echo "... test_model.i"
 	@echo "... test_model.s"

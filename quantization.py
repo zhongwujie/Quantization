@@ -35,10 +35,16 @@ def evaluate_saved_model(data_path, batch_size, num_eval_batches, criterion):
 
 ''' evaluate the script models'''
 def evaluate_script_model(data_path, batch_size, num_eval_batches, criterion):
-  file_path = "./output/script-models/quant_resnet50.pt"
+  file_path = "./output/script-models/quant_vgg16.pt"
   model = torch.jit.load(file_path)
   evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
 
+def test_script_model():
+  file_path = "./output/script-models/quant_vgg16.pt"
+  model = torch.jit.load(file_path)
+  data = torch.ones(1, 3, 224, 224)
+  output = model(data)
+  print(output)
 
 def save_quantized_models():
   model1 = resnet50(weights=ResNet50_QuantizedWeights.IMAGENET1K_FBGEMM_V2, quantize=True)
@@ -115,9 +121,9 @@ def main():
   batch_size = 250
   num_eval_batches = 20
   criterion = nn.CrossEntropyLoss()
-  load_imagenet(data_path, batch_size)
-  # evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
-  # torch.save(model.state_dict(), "./output/quantized-models/quant_vgg16.pth")
+  # load_imagenet(data_path, batch_size)
+  evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
+  # test_script_model()
 
 
 if __name__ == "__main__":

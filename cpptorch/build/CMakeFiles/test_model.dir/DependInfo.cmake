@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/zhong/code/workplace/Quantization/cpptorch/dataset.cpp" "/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/test_model.dir/dataset.cpp.o"
   "/home/zhong/code/workplace/Quantization/cpptorch/test_model.cpp" "/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/test_model.dir/test_model.cpp.o"
   "/home/zhong/code/workplace/Quantization/cpptorch/utils.cpp" "/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/test_model.dir/utils.cpp.o"
   )

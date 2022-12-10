@@ -9,13 +9,14 @@
 using std::string;
 using std::vector;
 
+vector<string> GetEntriesInDirectory(const string& dirPath);
 // Traverse the .jpg file in the folder
-void load_data_from_folder(string folder_path, vector<string> &list_images, 
-	vector<int> &list_labels);
+void load_data_from_folder(string folder_path, vector<string> &image_paths, 
+	vector<int> &labels);
 
 class myDataset:public torch::data::Dataset<myDataset>{
 public:
-	myDataset(string image_dir, string type){
+	myDataset(string image_dir){
 		load_data_from_folder(image_dir, image_paths, labels);
 	}
 	// Override get() function to return tensor at location index
@@ -26,6 +27,7 @@ public:
 		int label = labels.at(index);
 		torch::Tensor img_tensor = torch::from_blob(image.data, { image.rows, image.cols, 
 			3 }, torch::kByte).permute({ 2, 0, 1 }); // Channels x Height x Width
+		img_tensor = img_tensor.to(torch::kF32).div(255);
 		torch::Tensor label_tensor = torch::full({ 1 }, label);
 		return {img_tensor.clone(), label_tensor.clone()};
 	}

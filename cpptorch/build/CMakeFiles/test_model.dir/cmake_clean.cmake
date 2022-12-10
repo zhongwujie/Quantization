@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/test_model.dir/dataset.cpp.o"
   "CMakeFiles/test_model.dir/test_model.cpp.o"
   "CMakeFiles/test_model.dir/utils.cpp.o"
   "test_model"
