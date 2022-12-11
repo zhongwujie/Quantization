@@ -23,11 +23,13 @@ public:
 	torch::data::Example<> get(size_t index) override{
 		string image_path = image_paths.at(index);
 		cv::Mat image = cv::imread(image_path);
+		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+		image.convertTo(image, CV_32FC3);
+		image = image / 255.0;
 		cv::resize(image, image, cv::Size(224, 224));
 		int label = labels.at(index);
 		torch::Tensor img_tensor = torch::from_blob(image.data, { image.rows, image.cols, 
-			3 }, torch::kByte).permute({ 2, 0, 1 }); // Channels x Height x Width
-		img_tensor = img_tensor.to(torch::kF32).div(255);
+			3 }, torch::kF32).permute({ 2, 0, 1 }); // Channels x Height x Width
 		torch::Tensor label_tensor = torch::full({ 1 }, label);
 		return {img_tensor.clone(), label_tensor.clone()};
 	}

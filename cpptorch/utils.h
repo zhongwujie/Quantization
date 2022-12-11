@@ -8,16 +8,16 @@
 #include <torch/script.h>
 using std::string;
 using std::vector;
+using std::setprecision;
 
 class AverageMeter
 {
 private:
   string name;
-  size_t val, sum, count;
-  float avg;
+  float val, sum, count, avg;
 public:
   float GetAvg(){ return avg; }
-  void update(size_t val, size_t n);
+  void update(float val, size_t n);
   AverageMeter(string name);
   ~AverageMeter(){}
 };

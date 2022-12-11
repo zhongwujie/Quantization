@@ -5,12 +5,13 @@
 import torch
 import torch.utils.data
 import time
+import numpy as np
 from torch import nn
 from tqdm import tqdm
 from torchvision.models import vgg16, VGG16_Weights
 from torchvision.models.quantization import resnet50, ResNet50_QuantizedWeights
 from torchvision.models.quantization import mobilenet_v2, MobileNet_V2_QuantizedWeights
-
+from PIL import Image
 from utils import *
 import qvgg16
 
@@ -35,16 +36,19 @@ def evaluate_saved_model(data_path, batch_size, num_eval_batches, criterion):
 
 ''' evaluate the script models'''
 def evaluate_script_model(data_path, batch_size, num_eval_batches, criterion):
-  file_path = "./output/script-models/quant_vgg16.pt"
+  file_path = "./output/script-models/quant_mobilenet_v2.pt"
   model = torch.jit.load(file_path)
   evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
 
 def test_script_model():
   file_path = "./output/script-models/quant_vgg16.pt"
   model = torch.jit.load(file_path)
-  data = torch.ones(1, 3, 224, 224)
+  torch.manual_seed(0)
+  data = torch.rand(1, 3, 224, 224)
   output = model(data)
-  print(output)
+  torch.set_printoptions(profile="full")
+  print("data: ", data[0][0])
+  print("output: ", output)
 
 def save_quantized_models():
   model1 = resnet50(weights=ResNet50_QuantizedWeights.IMAGENET1K_FBGEMM_V2, quantize=True)
@@ -116,14 +120,35 @@ def convert_models():
     convert_model(src_path, dest_path, models[i], self_quantize_sigs[i])
 
 
+def transform_test():
+  transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize([224, 224])
+    # transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+  ])
+  data_path = "/home/zhong/code/dataset/imagenet/ILSVRC/Data/CLS-LOC/val_sorted"
+  img_path = data_path + "/n01440764/ILSVRC2012_val_00000293.JPEG"
+  file_path = "./output/script-models/quant_resnet50.pt"
+  model = torch.jit.load(file_path)
+  img = Image.open(img_path)
+  img = transform(img)
+  data = img.unsqueeze(0)
+  predict = model(data)
+  torch.set_printoptions(profile="full")
+  print("img: ", img[0])
+  print("predict: ", predict)
+  
+
+def concate_test():
+  a = torch.tensor([[[1, 2]], [[3, 4]], [[5, 6]]])
+  print(torch.concat([a[2], a[1], a[0]]))
+
 def main():
   data_path = "~/code/dataset/imagenet"
   batch_size = 250
   num_eval_batches = 20
   criterion = nn.CrossEntropyLoss()
-  # load_imagenet(data_path, batch_size)
   evaluate_script_model(data_path, batch_size, num_eval_batches, criterion)
-  # test_script_model()
 
 
 if __name__ == "__main__":

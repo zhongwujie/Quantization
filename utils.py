@@ -55,8 +55,6 @@ def evaluate(model, criterion, data_loader, neval_batches, verbose = True):
 	cnt = 0
 	with torch.no_grad():
 		for image, target in data_loader:
-			print("image size: ", image.size())
-			print("image:", image[0][0])
 			output = model(image)
 			loss = criterion(output, target)
 			acc1, acc5 = accuracy(output, target, topk=(1, 5))
@@ -65,7 +63,7 @@ def evaluate(model, criterion, data_loader, neval_batches, verbose = True):
 			top1.update(acc1[0], image.size(0))
 			top5.update(acc5[0], image.size(0))
 			cnt += 1
-			if cnt >= 1:
+			if cnt >= neval_batches:
 				return top1, top5
 
 	return top1, top5
@@ -76,8 +74,8 @@ def load_imagenet(data_path, batch_size):
 	val_dir = os.path.join(data_path, "ILSVRC/Data/CLS-LOC/val_sorted")
 	transform = transforms.Compose([
 		transforms.ToTensor(),
-		transforms.Resize([224, 224])
-		# transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+		transforms.Resize([224, 224]),
+		transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 	])
 	trainset = torchvision.datasets.ImageFolder(root=train_dir, transform=transform)
 	trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
