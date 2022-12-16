@@ -5,8 +5,7 @@
 import torch
 import torch.utils.data
 import time
-import numpy as np
-from torch import nn
+import torch.nn as nn
 from tqdm import tqdm
 from torchvision.models import vgg16, VGG16_Weights
 from torchvision.models.quantization import resnet50, ResNet50_QuantizedWeights
@@ -36,19 +35,17 @@ def evaluate_saved_model(data_path, batch_size, num_eval_batches, criterion):
 
 ''' evaluate the script models'''
 def evaluate_script_model(data_path, batch_size, num_eval_batches, criterion):
-  file_path = "./output/script-models/quant_mobilenet_v2.pt"
-  model = torch.jit.load(file_path)
-  evaluate_model(data_path, batch_size, num_eval_batches, criterion, model)
-
-def test_script_model():
   file_path = "./output/script-models/quant_vgg16.pt"
   model = torch.jit.load(file_path)
-  torch.manual_seed(0)
-  data = torch.rand(1, 3, 224, 224)
-  output = model(data)
-  torch.set_printoptions(profile="full")
-  print("data: ", data[0][0])
-  print("output: ", output)
+  replace_evaluate(data_path, batch_size, num_eval_batches, criterion, model)
+
+
+def test_quantized_model():
+  file_path = "./output/quantized-models/quant_resnet50.pth"
+  # model = qvgg16.vgg16()
+  model = resnet50(quantize = True)
+  load_quantized_model(file_path, model, self_quantized=False)
+  print(model)
 
 def save_quantized_models():
   model1 = resnet50(weights=ResNet50_QuantizedWeights.IMAGENET1K_FBGEMM_V2, quantize=True)
@@ -93,7 +90,20 @@ def QAT(data_path, batch_size, num_eval_batches, criterion):
   return quantized_model
 
 
-'''convert a model to script model, can only be used for vgg16'''
+'''vgg16: self_quantized; resnet50, mobilenet_v2: pytorch quantized'''
+def load_quantized_model(src_path, model, self_quantized):
+  if self_quantized:
+    model.qconfig = torch.ao.quantization.get_default_qconfig('fbgemm')
+    torch.quantization.prepare(model, inplace=True)
+    quantized_model = torch.quantization.convert(model.eval(), inplace=True)
+  else:
+    quantized_model = model
+  load_model(src_path, quantized_model)
+  return quantized_model
+
+
+'''Convert a model to script model. Pytorch has implemented the quantization 
+  operations for resnet50 and mobilenet internally'''
 def convert_model(src_path, dest_path, model, self_quantized):
   if self_quantized:
     model.qconfig = torch.ao.quantization.get_default_qconfig('fbgemm')
@@ -139,10 +149,6 @@ def transform_test():
   print("predict: ", predict)
   
 
-def concate_test():
-  a = torch.tensor([[[1, 2]], [[3, 4]], [[5, 6]]])
-  print(torch.concat([a[2], a[1], a[0]]))
-
 def main():
   data_path = "~/code/dataset/imagenet"
   batch_size = 250
@@ -152,4 +158,4 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+  test_quantized_model()

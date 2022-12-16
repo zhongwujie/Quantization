@@ -5,6 +5,9 @@ __pycache__/
 quantized-models/
 float-models/
 script-models/
+### model params
+resnet50/
+vgg16/
 ### libtorch
 *.zip
 libtorch/

@@ -1,8 +1,8 @@
 import torch
 import torch.utils.data
 import torchvision
-import sys
 import os
+import numpy as np
 from torch import nn
 from torchvision.models import vgg16, VGG16_Weights
 from torchvision import transforms
@@ -123,3 +123,43 @@ def load_model(model_file, model):
 	model.load_state_dict(state_dict)
 	model.to('cpu')
 	return model
+
+
+'''User defined conv module'''
+class usr_conv(nn.Module):
+	def __init__(self, in_channels, out_channels, kernel_size, weights, bias) -> None:
+		super().__init__()
+		self.in_channels = in_channels
+		self.out_channels = out_channels
+		self.kernel_size = kernel_size
+		self.weights = weights
+		self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
+		self.conv.weight.data.fill_(weights)
+		self.conv.bias.data.fill_(bias)
+	
+	def forward(self, x):
+		output = self.conv(x)
+		return output
+
+
+'''matrix1 slides on matrix2'''
+def perform_conv(matrix1: np.ndarray, matrix2: np.ndarray):
+	return np.convolve(matrix2, matrix1, "same")
+
+def _set_module(model, submodule_key, module):
+	tokens = submodule_key.split('.')
+	number = int(tokens[-1])
+	print(model)
+	# print(model.get_submodule("0"))
+	# layer = getattr(model._modules, number)
+	# print(layer)
+	
+
+
+'''Replace the conv and fc layer, and then evaluate the model'''
+def replace_evaluate(data_path, batch_size, neval_batches, criterion, model):
+	print("====== begin replace ======")
+	conv_names = [k for k, m in model.named_modules() if m.original_name == 'Conv2d']
+	for conv_name in conv_names:
+		new_layer = usr_conv(1, 5, 0, 0, 0)
+		_set_module(model, conv_name, new_layer)
