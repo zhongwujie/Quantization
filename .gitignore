@@ -6,8 +6,7 @@ quantized-models/
 float-models/
 script-models/
 ### model params
-resnet50/
-vgg16/
+params/
 ### libtorch
 *.zip
 libtorch/

@@ -4,8 +4,8 @@ import torchvision
 import os
 import numpy as np
 from torch import nn
-from torchvision.models import vgg16, VGG16_Weights
 from torchvision import transforms
+from typing import Dict, Iterable, Callable, Tuple
 
 class AverageMeter(object):
 	"""Computes and stores the average and current value"""
@@ -29,6 +29,29 @@ class AverageMeter(object):
 	def __str__(self):
 		fmtstr = '{name} {val' + self.fmt + '} ({avg' + self.fmt + '})'
 		return fmtstr.format(**self.__dict__)
+
+
+class FeatureExtractor(nn.Module):
+	def __init__(self, model: nn.Module, layers: Iterable[str]):
+		super().__init__()
+		self.model = model
+		self.layers = layers
+		self.outputs = {layer: torch.empty(0) for layer in layers}
+		self.inputs = {layer: torch.empty(0) for layer in layers}
+
+		for layer_id in layers:
+			layer = dict([*self.model.named_modules()])[layer_id]
+			layer.register_forward_hook(self.save_outputs_hook(layer_id))
+
+	def save_outputs_hook(self, layer_id: str) -> Callable:
+		def fn(_, input, output):
+			self.outputs[layer_id] = output
+			self.inputs[layer_id] = input[0]
+		return fn
+
+	def forward(self, x: torch.Tensor):
+		_ = self.model(x)
+		return self.inputs, self.outputs
 
 
 def accuracy(output, target, topk=(1,)):
@@ -65,7 +88,6 @@ def evaluate(model, criterion, data_loader, neval_batches, verbose = True):
 			cnt += 1
 			if cnt >= neval_batches:
 				return top1, top5
-
 	return top1, top5
 
 
@@ -154,7 +176,6 @@ def _set_module(model, submodule_key, module):
 	# layer = getattr(model._modules, number)
 	# print(layer)
 	
-
 
 '''Replace the conv and fc layer, and then evaluate the model'''
 def replace_evaluate(data_path, batch_size, neval_batches, criterion, model):

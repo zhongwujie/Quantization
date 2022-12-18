@@ -4,10 +4,7 @@
 '''
 import torch
 import torch.utils.data
-import time
 import torch.nn as nn
-from tqdm import tqdm
-from torchvision.models import vgg16, VGG16_Weights
 from torchvision.models.quantization import resnet50, ResNet50_QuantizedWeights
 from torchvision.models.quantization import mobilenet_v2, MobileNet_V2_QuantizedWeights
 from PIL import Image
