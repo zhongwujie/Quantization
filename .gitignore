@@ -5,6 +5,9 @@ __pycache__/
 quantized-models/
 float-models/
 script-models/
+### cpptorch related
+build/
+result/
 ### model params
 params/
 ### libtorch

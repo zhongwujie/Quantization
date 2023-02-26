@@ -29,7 +29,7 @@ vector<string> GetEntriesInDirectory(const string& dir_path){
 	return entries;
 }
 
-/* 
+/**
 * @brief: traverse the .jpg file in the folder
 * @inputs:
 		- the root folder path

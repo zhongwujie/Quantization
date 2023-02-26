@@ -1,3 +1,0 @@
-/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/rebuild_cache.dir
-/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/edit_cache.dir
-/home/zhong/code/workplace/Quantization/cpptorch/build/CMakeFiles/test_model.dir
